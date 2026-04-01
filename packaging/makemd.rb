@@ -1,7 +1,7 @@
 class makemd < Formula
   desc "Generate and maintain purposeful README.md files"
   homepage "https://github.com/your-org/makemd"
-  version "0.2.0"
+  version "makemd"
 
   if OS.mac?
     if Hardware::CPU.arm?

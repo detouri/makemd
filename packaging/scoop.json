@@ -1,15 +1,15 @@
 {
-  "version": "0.2.0",
+  "version": "makemd",
   "description": "Generate and maintain purposeful README.md files",
   "homepage": "https://github.com/detouri/makemd",
   "license": "MIT",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/detouri/makemd/releases/download/v0.2.0/makemd_windows_amd64.zip",
+      "url": "https://github.com/detouri/makemd/releases/download/vmakemd/makemd_windows_amd64.zip",
       "hash": "REPLACE_ME"
     },
     "arm64": {
-      "url": "https://github.com/detouri/makemd/releases/download/v0.2.0/makemd_windows_arm64.zip",
+      "url": "https://github.com/detouri/makemd/releases/download/vmakemd/makemd_windows_arm64.zip",
       "hash": "REPLACE_ME"
     }
   },
