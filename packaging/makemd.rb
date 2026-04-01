@@ -1,22 +1,22 @@
 class makemd < Formula
   desc "Generate and maintain purposeful README.md files"
-  homepage "https://github.com/your-org/makemd"
-  version "makemd"
+  homepage "https://github.com/detouri/makemd"
+  version "0.3.0"
 
   if OS.mac?
     if Hardware::CPU.arm?
-      url "https://github.com/your-org/makemd/releases/download/v#{version}/makemd_darwin_arm64.tar.gz"
+      url "https://github.com/detouri/makemd/releases/download/v#{version}/makemd_darwin_arm64.tar.gz"
       sha256 "REPLACE_ME"
     else
-      url "https://github.com/your-org/makemd/releases/download/v#{version}/makemd_darwin_amd64.tar.gz"
+      url "https://github.com/detouri/makemd/releases/download/v#{version}/makemd_darwin_amd64.tar.gz"
       sha256 "REPLACE_ME"
     end
   elsif OS.linux?
     if Hardware::CPU.arm?
-      url "https://github.com/your-org/makemd/releases/download/v#{version}/makemd_linux_arm64.tar.gz"
+      url "https://github.com/detouri/makemd/releases/download/v#{version}/makemd_linux_arm64.tar.gz"
       sha256 "REPLACE_ME"
     else
-      url "https://github.com/your-org/makemd/releases/download/v#{version}/makemd_linux_amd64.tar.gz"
+      url "https://github.com/detouri/makemd/releases/download/v#{version}/makemd_linux_amd64.tar.gz"
       sha256 "REPLACE_ME"
     end
   end

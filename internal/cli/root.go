@@ -3,7 +3,7 @@ package cli
 import "github.com/spf13/cobra"
 
 var (
-	version = "makemd"
+	version = "0.3.0"
 	rootCmd = &cobra.Command{
 		Use:           "makemd",
 		Short:         "Generate and maintain purposeful README.md files",

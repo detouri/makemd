@@ -33,7 +33,7 @@ func init() {
 	newCmd.Flags().StringVar(&newOpts.LicenseName, "license", "MIT", "license name")
 	newCmd.Flags().StringVar(&newOpts.Audience, "audience", "", "target audience")
 	newCmd.Flags().StringVar(&newOpts.Status, "status", "", "project status")
-	newCmd.Flags().StringVar(&newOpts.MinimumVersion, "go", "", "minimum Go version")
+	newCmd.Flags().StringVar(&newOpts.MinimumVersion, "", "", "minimum version")
 	newCmd.Flags().BoolVar(&newOpts.Private, "private", false, "mark as closed-source/internal")
 	newCmd.Flags().StringVarP(&newOut, "output", "o", "README.md", "output file")
 	newCmd.Flags().BoolVar(&newForce, "force", false, "overwrite existing file")
