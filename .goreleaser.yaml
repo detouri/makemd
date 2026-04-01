@@ -1,0 +1,47 @@
+project_name: makemd
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./...
+
+builds:
+  - id: makemd
+    main: ./cmd/makemd
+    binary: makemd
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X github.com/detouri/makemd/cli.version={{.Version}}
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - README.md
+      - LICENSE*
+
+checksum:
+  name_template: checksums.txt
+
+release:
+  github:
+    owner: detouri
+    name: makemd
+
+brews:
+  - repository:
+      owner: detouri
+      name: homebrew-tap
+    directory: Formula
+    license: MIT

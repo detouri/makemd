@@ -1,0 +1,116 @@
+name: Prerelease
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - ".github/badges/coverage.svg"
+
+concurrency:
+  group: prerelease-main
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            ext: ""
+            archive: tar.gz
+          - goos: linux
+            goarch: arm64
+            ext: ""
+            archive: tar.gz
+          - goos: darwin
+            goarch: amd64
+            ext: ""
+            archive: tar.gz
+          - goos: darwin
+            goarch: arm64
+            ext: ""
+            archive: tar.gz
+          - goos: windows
+            goarch: amd64
+            ext: .exe
+            archive: zip
+          - goos: windows
+            goarch: arm64
+            ext: .exe
+            archive: zip
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Resolve prerelease version
+        id: version
+        run: |
+          base_version="$(cat VERSION)"
+          short_sha="$(printf '%s' "${GITHUB_SHA}" | cut -c1-7)"
+          prerelease_version="${base_version}-pre.${GITHUB_RUN_NUMBER}+${short_sha}"
+          echo "version=${prerelease_version}" >> "$GITHUB_OUTPUT"
+
+      - name: Build prerelease artifact
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          mkdir -p dist
+          output="dist/makemd_${GOOS}_${GOARCH}${{ matrix.ext }}"
+          go build -trimpath -ldflags="-s -w -X github.com/detouri/makemd/internal/cli.version=${VERSION}" -o "$output" ./cmd
+          if [ "${{ matrix.archive }}" = "zip" ]; then
+            (cd dist && zip "makemd_${GOOS}_${GOARCH}.zip" "makemd_${GOOS}_${GOARCH}${{ matrix.ext }}")
+          else
+            tar -C dist -czf "dist/makemd_${GOOS}_${GOARCH}.tar.gz" "makemd_${GOOS}_${GOARCH}${{ matrix.ext }}"
+          fi
+
+      - name: Upload prerelease artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: prerelease-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/makemd_${{ matrix.goos }}_${{ matrix.goarch }}.${{ matrix.archive }}
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve prerelease version
+        id: version
+        run: |
+          base_version="$(cat VERSION)"
+          short_sha="$(printf '%s' "${GITHUB_SHA}" | cut -c1-7)"
+          prerelease_version="${base_version}-pre.${GITHUB_RUN_NUMBER}+${short_sha}"
+          echo "version=${prerelease_version}" >> "$GITHUB_OUTPUT"
+
+      - name: Download prerelease artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: prerelease-artifacts
+          pattern: prerelease-*
+          merge-multiple: true
+
+      - name: Publish rolling prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete pre-main --yes --cleanup-tag || true
+          gh release create pre-main prerelease-artifacts/* \
+            --target "${GITHUB_SHA}" \
+            --prerelease \
+            --title "pre-main: ${{ steps.version.outputs.version }}" \
+            --notes "Rolling prerelease from main for commit ${GITHUB_SHA}."

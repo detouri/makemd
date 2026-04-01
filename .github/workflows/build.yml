@@ -1,0 +1,69 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - ".github/badges/coverage.svg"
+
+jobs:
+  binaries:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            ext: ""
+            archive: tar.gz
+          - goos: linux
+            goarch: arm64
+            ext: ""
+            archive: tar.gz
+          - goos: darwin
+            goarch: amd64
+            ext: ""
+            archive: tar.gz
+          - goos: darwin
+            goarch: arm64
+            ext: ""
+            archive: tar.gz
+          - goos: windows
+            goarch: amd64
+            ext: .exe
+            archive: zip
+          - goos: windows
+            goarch: arm64
+            ext: .exe
+            archive: zip
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Build snapshot binary
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          VERSION: main-${{ github.sha }}
+        run: |
+          mkdir -p dist
+          output="dist/makemd_${GOOS}_${GOARCH}${{ matrix.ext }}"
+          go build -trimpath -ldflags="-s -w -X github.com/detouri/makemd/internal/cli.version=${VERSION}" -o "$output" ./cmd
+          if [ "${{ matrix.archive }}" = "zip" ]; then
+            (cd dist && zip "makemd_${GOOS}_${GOARCH}.zip" "makemd_${GOOS}_${GOARCH}${{ matrix.ext }}")
+          else
+            tar -C dist -czf "dist/makemd_${GOOS}_${GOARCH}.tar.gz" "makemd_${GOOS}_${GOARCH}${{ matrix.ext }}"
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: makemd-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/makemd_${{ matrix.goos }}_${{ matrix.goarch }}.${{ matrix.archive }}
