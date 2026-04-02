@@ -64,7 +64,7 @@ Homebrew formula scaffold for macOS and Linux release archives.
 
 Current characteristics:
 
-- version pinned to `0.4.1`
+- version pinned to `0.4.2`
 - URLs still point to `your-org/makemd`
 - checksums are placeholders
 
@@ -75,7 +75,7 @@ Scoop manifest for Windows release archives.
 Current characteristics:
 
 - homepage points to `detouri/makemd`
-- download URLs target `v0.4.1`
+- download URLs target `v0.4.2`
 - `version` still says `0.1.0`
 - archive hashes are placeholders
 
