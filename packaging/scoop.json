@@ -5,11 +5,11 @@
   "license": "MIT",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/detouri/makemd/releases/download/v0.3.0/makemd_windows_amd64.zip",
+      "url": "https://github.com/detouri/makemd/releases/download/v0.4.0/makemd_windows_amd64.zip",
       "hash": "69698fcfc7fd98f36d40ba679b607197d6c1cc34c4f691d3b30937d2293dde58"
     },
     "arm64": {
-      "url": "https://github.com/detouri/makemd/releases/download/v0.3.0/makemd_windows_arm64.zip",
+      "url": "https://github.com/detouri/makemd/releases/download/v0.4.0/makemd_windows_arm64.zip",
       "hash": "d2740ae93b2d51f7777fab5ef4638d64a4cda2ad3a93ca6bba76397909652640"
     }
   },

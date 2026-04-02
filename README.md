@@ -188,11 +188,11 @@ go test ./...
 
 Use this flow for every shipped release.
 
-1. Pick the next version, for example `0.3.0`.
+1. Pick the next version, for example `0.4.0`.
 2. Sync all versioned files in one pass:
 
 ```sh
-./scripts/set-version.sh 0.3.0
+./scripts/set-version.sh 0.4.0
 ```
 
 3. Review the changed files:
@@ -203,8 +203,8 @@ Use this flow for every shipped release.
 6. After the merged commit is on `main`, create and push the release tag:
 
 ```sh
-git tag v0.3.0
-git push origin v0.3.0
+git tag v0.4.0
+git push origin v0.4.0
 ```
 
 7. The tagged release workflow verifies that the tag points at `main`, rebuilds all release binaries, and publishes the GitHub Release assets for:
