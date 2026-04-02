@@ -65,13 +65,15 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          mkdir -p dist
-          output="dist/makemd_${GOOS}_${GOARCH}${{ matrix.ext }}"
+          mkdir -p dist/package
+          archive="dist/makemd_${GOOS}_${GOARCH}.${{ matrix.archive }}"
+          binary_name="makemd${{ matrix.ext }}"
+          output="dist/package/${binary_name}"
           go build -trimpath -ldflags="-s -w -X github.com/detouri/makemd/internal/cli.version=${VERSION}" -o "$output" ./cmd
           if [ "${{ matrix.archive }}" = "zip" ]; then
-            (cd dist && zip "makemd_${GOOS}_${GOARCH}.zip" "makemd_${GOOS}_${GOARCH}${{ matrix.ext }}")
+            (cd dist/package && zip "../makemd_${GOOS}_${GOARCH}.zip" "${binary_name}")
           else
-            tar -C dist -czf "dist/makemd_${GOOS}_${GOARCH}.tar.gz" "makemd_${GOOS}_${GOARCH}${{ matrix.ext }}"
+            tar -C dist/package -czf "$archive" "${binary_name}"
           fi
 
       - name: Upload prerelease artifact

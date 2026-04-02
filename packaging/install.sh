@@ -35,5 +35,17 @@ trap 'rm -rf "$tmpdir"' EXIT INT TERM
 
 curl -fsSL "$URL" -o "$tmpdir/${BINARY}.tar.gz"
 tar -xzf "$tmpdir/${BINARY}.tar.gz" -C "$tmpdir"
-install "$tmpdir/${BINARY}" "${INSTALL_DIR}/${BINARY}"
+
+artifact_path="$tmpdir/${BINARY}"
+if [ ! -f "$artifact_path" ]; then
+    legacy_path="$tmpdir/${BINARY}_${OS}_${ARCH}"
+    if [ -f "$legacy_path" ]; then
+        artifact_path="$legacy_path"
+    else
+        echo "expected ${BINARY} in archive, but no installable binary was found" >&2
+        exit 1
+    fi
+fi
+
+install "$artifact_path" "${INSTALL_DIR}/${BINARY}"
 echo "installed ${BINARY} to ${INSTALL_DIR}/${BINARY}"
